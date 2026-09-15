@@ -122,8 +122,7 @@ As mensagens trafegam sobre TCP no seguinte formato:
 Os tipos de mensagem implementados são: `MSG_LOGIN`, `MSG_GUESS`,
 `MSG_GAME_STATE`, `MSG_GAME_OVER` e `MSG_LOGOUT`.
 
-## Autores
+## Autore
 
-- Nome do aluno 1 - NUSP
-- Nome do aluno 2 - NUSP
-- Nome do aluno 3 - NUSP
+- Joao Pedro Becer 
+
