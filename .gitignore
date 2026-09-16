@@ -1,0 +1,12 @@
+# Binários gerados pela compilação
+bin/
+
+# Arquivos objeto
+*.o
+*.obj
+
+# Editores / sistema
+.vscode/
+.idea/
+*.swp
+.DS_Store
