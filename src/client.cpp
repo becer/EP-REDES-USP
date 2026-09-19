@@ -1,7 +1,11 @@
 #include "client.hpp"
 #include "protocol.hpp"
 
-Client::Client(){std::cout << "============INICIALIZING CLIENT | ID:" << this->sockfd << "==============" << std::endl;}
+Client::Client(){
+	std::cout << "============INICIALIZING CLIENT | ID:" << this->sockfd << "==============" << std::endl;
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+}
 
 int Client::init(){
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -10,8 +14,6 @@ int Client::init(){
 		return -1;
 	}
 			
-	memset(&addr, 0, sizeof(addr));
-	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
 	
 	if(connect(sockfd, (struct sockaddr*) &addr, sizeof(addr)) < 0){
