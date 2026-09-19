@@ -13,11 +13,11 @@ static bool enviarTudo(int fd, const void* buf, size_t n){
 	return true;
 }
 
-static bool receberTudo(int fd, const void* buf, size_t n){
-	const char* p = static_cast<const char*>(buf);
+static bool receberTudo(int fd, void* buf, size_t n){
+	char* p = static_cast<char*>(buf);
 	size_t recebidos = 0;
 
-	while (enviados < n){
+	while (recebidos < n){
 		ssize_t r = recv(fd, p + recebidos, n - recebidos, 0);
 		if(r <= 0) return false;
 		recebidos += static_cast<size_t>(r);

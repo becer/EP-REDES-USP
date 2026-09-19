@@ -8,17 +8,12 @@ Forca::Forca(const std::string& palavra){
 	this->letrasAdescobrir = palavra.length();
 	this->palavraHash = escondePalavra(this->palavra);
 	this->tentRestante = 7;
-	this->vitoria = false;
-	this->acertou = false;
 }
 
-std::string Forca::input(char input){
-	std::vector<int> indices = compare(this->palavra, input, &acertou);
-	revelaPalavra(this->palavraHash, indices, input);
+std::string Forca::getPalavra() const{return palavra;}
+bool Forca::venceu() const{return letrasAdescobrir == 0;}
 
-	if(!acertou) this->tentRestante--;
-	this->tentativas.push_back(input);
-	
+std::string Forca::getEstado() const{
 	/*montagem da string*/
 	std::string output = this->palavraHash;
 	output += "\ntentativas: ";
@@ -27,13 +22,26 @@ std::string Forca::input(char input){
 		output += " ";
 	}
 	output += "\n" + getDraw();
-	
-	this->letrasAdescobrir -= indices.size();
 	return output;
 }
 
-bool Forca::acabou(){
-	if(this->tentRestante == 0){
+
+std::string Forca::input(char input){
+	bool acertou = false;
+	std::vector<int> indices = compare(this->palavra, input, &acertou);
+	revelaPalavra(this->palavraHash, indices, input);
+
+	if(!acertou) this->tentRestante--;
+	this->tentativas.push_back(input);
+	
+
+	
+	this->letrasAdescobrir -= indices.size();
+	return getEstado();
+}
+
+bool Forca::acabou() const{
+	if(this->tentRestante == 0 || this->letrasAdescobrir == 0){
 		return 1;
 	}
 	return 0;

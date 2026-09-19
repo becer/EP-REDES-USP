@@ -11,19 +11,24 @@
 #include <thread>
 #include "utils.hpp"
 #include <iostream>
+#include "protocol.hpp"
 
 class Client{
 private:
-	int sockfd, status, port, IP;
+	int sockfd = -1, port = 8888;
 	struct sockaddr_in addr;
-	char receivedText[SIZE], sendedText[SIZE];
+	std::string nome;
+
+	void threadReceive();
+	void threadSend();
+
 public:
 	Client();
 
 	int init();
 
 	void setPort(int port);
-	void setIP(const char* IP);
+	void setIP(const std::string& IP);
 	int getStatus();
 	void closeSock();
 };
