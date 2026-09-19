@@ -27,6 +27,10 @@ std::string Forca::getEstado() const{
 
 
 std::string Forca::input(char input){
+	for(char tent : tentativas){
+		if(input == tent) return getEstado();
+	}
+
 	bool acertou = false;
 	std::vector<int> indices = compare(this->palavra, input, &acertou);
 	revelaPalavra(this->palavraHash, indices, input);
@@ -45,6 +49,28 @@ bool Forca::acabou() const{
 		return 1;
 	}
 	return 0;
+}
+
+void Forca::reset(const std::string& novaPalavra){
+	this->palavra = novaPalavra;
+	this->tentativas.clear();
+	this->palavraHash = escondePalavra(this->palavra);
+	this->tentRestante = 7;
+	this->letrasAdescobrir = this->palavra.length();
+}
+
+bool Forca::tentarPalavra(const std::string& tentativa){
+	
+	if(tentativa == this->palavra){
+		this->palavraHash = this->palavra;
+		this->letrasAdescobrir = 0;
+		return true;
+	}
+	else{
+		this->tentRestante = 0;
+		return false;
+	}
+	return false;
 }
 
 std::string Forca::getDraw() const{

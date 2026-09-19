@@ -35,6 +35,7 @@ private:
 	void removeClient(int fd);
 	int getIndiceOf(int fd);
 	std::string actualState();
+	void waitNewWord();
 
 public:
 	Server(const std::string& palavra);

@@ -1,6 +1,7 @@
 #include "server.hpp"
 #include "utils.hpp"
 #include "protocol.hpp"
+#include <ostream>
 
 
 Server::Server(const std::string& palavra) : jogo(palavra){}
@@ -82,6 +83,32 @@ void Server::broadcast(TipoMsg tipo, const std::string& payload){
 	}
 }
 
+void Server::waitNewWord(){
+	std::cout << "Digite outra palavra(ou sair)" << std::endl;
+	std::cout.flush();
+
+	std::string novaPalavra;
+	if(!(std::cin >> novaPalavra)) return;
+	if(novaPalavra == "sair") {
+		std::cout << "SERVER::CLOSING_GAME" << std::endl;
+		exit(0);
+	}
+
+	std::vector<int> fds;
+	std::string state;
+	{
+	std::lock_guard<std::mutex> lock(mtx);
+	jogo.reset(novaPalavra);
+	actualPlayer = 0;
+	state = actualState();
+	fds = clients;
+	}
+
+	for(int fd : fds){enviarPacote(fd, STATE, state);}
+	std::cout << "SERVER::NEW_WORD: " << novaPalavra << std::endl;
+}
+
+
 void Server::removeClient(int fd){
 	std::lock_guard<std::mutex> lock(mtx);
 	int i = getIndiceOf(fd);
@@ -121,25 +148,29 @@ void Server::acceptClient(int fd){
 			}case GUESS:{
 				TipoMsg tipoResp = STATE;
 				std::string resp;
-
+				bool fim = false;
+	
 				{
 				std::lock_guard<std::mutex> lock(mtx);
+				if(jogo.acabou()) break;
 				int ID = getIndiceOf(fd);
 				if(ID < 0) break;
 				if(ID != actualPlayer) break;
 				if(payload.empty()) break;
+				if(payload.size() == 1){ jogo.input(payload[0]);}
+				else{ jogo.tentarPalavra(payload);}
 				}
 
-				jogo.input(payload[0]);
 				if(jogo.acabou()){
 					tipoResp = END_GAME;
 					if(jogo.venceu()){
-						resp = "O " + names[actualPlayer] + " ganhou!";
+						resp = "O(a) " + names[actualPlayer] + " ganhou! ";
 					}
 					else{
 						resp = "Acabaram as tentativas restantes...";
 					}
 					resp += jogo.getEstado();
+					fim = true;
 				}
 				else{
 					if(!clients.empty()){
@@ -148,6 +179,7 @@ void Server::acceptClient(int fd){
 					resp = actualState();
 				}
 				broadcast(tipoResp, resp);
+				if(fim) std::thread(&Server::waitNewWord, this).detach();
 				break;
 			
 			}case LOGOUT:

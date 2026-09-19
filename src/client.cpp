@@ -63,7 +63,7 @@ void Client::threadSend(){
 			enviarPacote(sockfd, LOGOUT, "");
 			break;
 		}
-		enviarPacote(sockfd, GUESS, line.substr(0, 1));
+		enviarPacote(sockfd, GUESS, line);
 	}
 }
 

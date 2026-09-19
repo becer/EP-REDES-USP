@@ -21,7 +21,8 @@ public:
 	std::string getEstado() const;
 	std::string getPalavra() const;
 	bool venceu() const;
-
+	void reset(const std::string& novaPalavra);
+	bool tentarPalavra(const std::string& tentativa);
 
 };
 
