@@ -10,7 +10,8 @@ modo multiplayer via terminal, utilizando comunicação por sockets TCP.
 
 O servidor mantém o estado central do jogo (palavra secreta, letras já
 tentadas, número de erros, turno atual) e coordena múltiplos clientes
-conectados simultaneamente. Cada cliente se conecta, informa um nome e
+conectados simultaneamente. Cada cliente se conecta, informa um nome, 
+seleciona o IP do servidor(local host ou próprio), seleciona porta e
 passa a receber o estado atualizado do tabuleiro a cada rodada. O jogo
 avança em turnos: apenas o jogador da vez pode enviar um chute, e o
 resultado é transmitido a todos os clientes conectados.
@@ -54,7 +55,8 @@ EP_Redes/
 │   ├── server_main.cpp
 │   └── utils.cpp
 ├── Makefile
-└── README.md
+├── README.md 
+└── boneco.txt
 ```
 
 ## Dependências
@@ -92,16 +94,13 @@ make clean
 Em um terminal, inicie o servidor:
 
 ```sh
-./bin/server <palavra>
+./bin/server 
 ```
-
-O parâmetro `<palavra>` é opcional. Caso não seja informado, o servidor
-utiliza um valor padrão definido em código.
 
 Em outros terminais, conecte um ou mais clientes:
 
 ```sh
-./bin/client <ip_do_servidor>
+./bin/client
 ```
 
 ## Protocolo de Comunicação
@@ -119,10 +118,10 @@ As mensagens trafegam sobre TCP no seguinte formato:
 - O campo `tamanho` é um `uint16_t` em network byte order (big-endian).
 - O campo `payload` contém os dados da mensagem, sem terminador nulo.
 
-Os tipos de mensagem implementados são: `MSG_LOGIN`, `MSG_GUESS`,
-`MSG_GAME_STATE`, `MSG_GAME_OVER` e `MSG_LOGOUT`.
+Os tipos de mensagem implementados são: `LOGIN`, `GUESS`,
+`STATE`, `END_GAME` e `LOGOUT`.
 
-## Autore
+## Autor
 
 - Joao Pedro Becer 
 
