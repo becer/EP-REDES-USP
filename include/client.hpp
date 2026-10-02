@@ -29,7 +29,6 @@ public:
 
 	void setPort(int port);
 	void setIP(const std::string& IP);
-	int getStatus();
 	void closeSock();
 };
 

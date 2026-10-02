@@ -158,8 +158,7 @@ void Server::acceptClient(int fd){
 				if(ID != actualPlayer) break;
 				if(payload.empty()) break;
 				if(payload.size() == 1){ jogo.input(payload[0]);}
-				else{ jogo.tentarPalavra(payload);}
-				}
+				else{ jogo.tentarPalavra(payload);}	
 
 				if(jogo.acabou()){
 					tipoResp = END_GAME;
@@ -178,6 +177,8 @@ void Server::acceptClient(int fd){
 					}
 					resp = actualState();
 				}
+				}//lock
+
 				broadcast(tipoResp, resp);
 				if(fim) std::thread(&Server::waitNewWord, this).detach();
 				break;
